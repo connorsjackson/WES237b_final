@@ -31,9 +31,9 @@ int main(int argc,  char **argv)
   float data1_im[8]     = {7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 0.0};
   float expected1_re[8] = {28.0, 5.656, 0.0, -2.343, -4.0, -5.656, -8.0, -13.656};
   float expected1_im[8] = {28.0, 13.656, 8.0, 5.656, 4.0, 2.343, 0.0, -5.656};
-  printf("\n---Time Domain:\n");print_complex_data(data1_re, data1_im, 8);
+  printf("---Time Domain:\n");print_complex_data(data1_re, data1_im, 8);
   fft(data1_re, data1_im, 8);
-  printf("\n---Frequency Domain:\n\n");print_complex_data(data1_re, data1_im, 8);
+  printf("---Frequency Domain:\n");print_complex_data(data1_re, data1_im, 8);
 
   int tc1_re = compare_arrays(data1_re, expected1_re, 8, 0.01);
   int tc1_im = compare_arrays(data1_im, expected1_im, 8, 0.01);
@@ -77,7 +77,7 @@ int main(int argc,  char **argv)
   for(i=0;i<100000;i++) fft(data5_re, data5_im, 128);
   stop = clock();
   cpu_time_used = ((double) (stop - start)) / CLOCKS_PER_SEC;
-  printf("Average time per fft %fms", cpu_time_used/1000);
+  printf("Average time per fft %fms\n", cpu_time_used/1000);
 }
 
 void print_complex_data(float data_re[], float data_im[], int len)
@@ -88,6 +88,7 @@ void print_complex_data(float data_re[], float data_im[], int len)
   printf("\n\tImag: ");
   for (int i=0;i<len;i++)
     printf("%.2f ", data_im[i]);
+  printf("\n");
 }
 
 void print_test_result(int tc_re, int tc_im, int tc_num)
