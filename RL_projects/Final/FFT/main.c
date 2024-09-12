@@ -3,14 +3,11 @@
 #include <time.h>
 #include "fft.h"
 
-int
-compare_arrays(const float x[], const float y[],  const unsigned int N, const float eps);
 
-void
-print_arr(const float data[], const unsigned int N);
-
-void
-print_test_result(int tc_re, int tc_im, int tc_num);
+int compare_arrays(const float x[], const float y[],  const unsigned int N, const float eps);
+void print_arr(const float data[], const unsigned int N);
+void print_test_result(int tc_re, int tc_im, int tc_num);
+void print_complex_data(float data_re[], float data_im[], int len);
 
 // We will run 4 test cases to ensure our FFT data is correct
 int main(int argc,  char **argv)
@@ -34,7 +31,10 @@ int main(int argc,  char **argv)
   float data1_im[8]     = {7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 0.0};
   float expected1_re[8] = {28.0, 5.656, 0.0, -2.343, -4.0, -5.656, -8.0, -13.656};
   float expected1_im[8] = {28.0, 13.656, 8.0, 5.656, 4.0, 2.343, 0.0, -5.656};
+  printf("\n---Time Domain:\n");print_complex_data(data1_re, data1_im, 8);
   fft(data1_re, data1_im, 8);
+  printf("\n---Frequency Domain:\n\n");print_complex_data(data1_re, data1_im, 8);
+
   int tc1_re = compare_arrays(data1_re, expected1_re, 8, 0.01);
   int tc1_im = compare_arrays(data1_im, expected1_im, 8, 0.01);
   print_test_result(tc1_re, tc1_im, 1);
@@ -78,6 +78,16 @@ int main(int argc,  char **argv)
   stop = clock();
   cpu_time_used = ((double) (stop - start)) / CLOCKS_PER_SEC;
   printf("Average time per fft %fms", cpu_time_used/1000);
+}
+
+void print_complex_data(float data_re[], float data_im[], int len)
+{
+  printf("\tReal: ");
+  for (int i=0;i<len;i++)
+    printf("%.2f ", data_re[i]);
+  printf("\n\tImag: ");
+  for (int i=0;i<len;i++)
+    printf("%.2f ", data_im[i]);
 }
 
 void print_test_result(int tc_re, int tc_im, int tc_num)
