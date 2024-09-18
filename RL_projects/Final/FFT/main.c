@@ -15,6 +15,7 @@
     }
 
 ///////
+#define DEBUG 0
 void fft(float data_re[], float data_im[], const unsigned int N);
 
 // helper functions called by the fft
@@ -117,26 +118,36 @@ int main(int argc,  char **argv)
   CHECK_ERR(err, "LoadMatrix");
 
   unsigned int N = input0.shape[0];
-  printf("---Input0 & 1:\n");
-  for(unsigned int n=0;n<N;n++)
-    printf("%.2f + j(%.2f)\n", (float) input0.data[n],  (float) input1.data[n]);
-  
-  printf("---Expected 0 & 1:\n");
-  for(unsigned int n=0;n<N;n++)
-    printf("%.2f + j(%.2f)\n", (float) expected0.data[n],  (float) expected1.data[n]);
-  
-  printf("---Input Data (Files: input0.raw & input1.raw), N = %d\n", N);
-  print_complex_data(input0.data, input1.data, N);
+  printf("N = %d\n",N);
 
+  if (DEBUG){
+    printf("---Input0 & 1:\n");
+    for(unsigned int n=0;n<N;n++)
+      printf("%.2f + j(%.2f)\n", (float) input0.data[n],  (float) input1.data[n]);
+    
+    printf("---Expected 0 & 1:\n");
+    for(unsigned int n=0;n<N;n++)
+      printf("%.2f + j(%.2f)\n", (float) expected0.data[n],  (float) expected1.data[n]);
+    
+    printf("---Input Data (Files: input0.raw & input1.raw), N = %d\n", N);
+    print_complex_data(input0.data, input1.data, N);
+  }
   // Test Case 1
-  fft(input0.data, input1.data, N); //fft(data1_re, data1_im, 8);
+  output0 = input0;
+  output1 = input1;
+  fft(output0.data, output1.data, N); //fft(data1_re, data1_im, 8);
   
-  printf("---Frequency Domain:\n");
-  print_complex_data(input0.data, input1.data, N); //print_complex_data(data1_re, data1_im, N);
+  if (DEBUG){
+    printf("---Frequency Domain:\n");
+    print_complex_data(input0.data, input1.data, N); //print_complex_data(data1_re, data1_im, N);
+  }
+  // Save the matrix
+  SaveMatrix(output0_file, &input0);
+  SaveMatrix(output1_file, &input1);
 
   // Check the result of the matrix multiply
-  CheckMatrix(&input0, &expected0);
-  CheckMatrix(&input1, &expected1);
+  printf("CheckMatrix      (Real): \t");CheckMatrix(&output0, &expected0);
+  printf("CheckMatrix (Imaginary): \t");CheckMatrix(&output1, &expected1);
 }
 
 void print_complex_data(float data_re[], float data_im[], int len)
