@@ -22,6 +22,16 @@ solution: ../../helper_lib/helper_lib.a main.c
 
 run: solution
 	./solution Dataset/0/input0.raw Dataset/0/input1.raw Dataset/0/output0.raw Dataset/0/output1.raw Dataset/0/expected0.raw Dataset/0/expected1.raw
+	./solution Dataset/1/input0.raw Dataset/1/input1.raw Dataset/1/output0.raw Dataset/1/output1.raw Dataset/1/expected0.raw Dataset/1/expected1.raw
+	./solution Dataset/2/input0.raw Dataset/2/input1.raw Dataset/2/output0.raw Dataset/2/output1.raw Dataset/2/expected0.raw Dataset/2/expected1.raw
+	./solution Dataset/3/input0.raw Dataset/3/input1.raw Dataset/3/output0.raw Dataset/3/output1.raw Dataset/3/expected0.raw Dataset/3/expected1.raw
+	./solution Dataset/4/input0.raw Dataset/4/input1.raw Dataset/4/output0.raw Dataset/4/output1.raw Dataset/4/expected0.raw Dataset/4/expected1.raw
+	./solution Dataset/5/input0.raw Dataset/5/input1.raw Dataset/5/output0.raw Dataset/5/output1.raw Dataset/5/expected0.raw Dataset/5/expected1.raw
+	./solution Dataset/6/input0.raw Dataset/6/input1.raw Dataset/6/output0.raw Dataset/6/output1.raw Dataset/6/expected0.raw Dataset/6/expected1.raw
+	./solution Dataset/7/input0.raw Dataset/7/input1.raw Dataset/7/output0.raw Dataset/7/output1.raw Dataset/7/expected0.raw Dataset/7/expected1.raw
+	
+run1: solution
+	./solution Dataset/2/input0.raw Dataset/2/input1.raw Dataset/2/output0.raw Dataset/2/output1.raw Dataset/2/expected0.raw Dataset/2/expected1.raw
 
 clean: 
 	rm -f solution

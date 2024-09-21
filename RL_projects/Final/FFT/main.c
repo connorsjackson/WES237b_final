@@ -37,54 +37,48 @@ void rearrange(float data_re[], float data_im[], const unsigned int N)
   for(unsigned int position=0; position<N;position++)
     {
       if(target>position) {
-	const float temp_re = data_re[target];
-	const float temp_im = data_im[target];
-	data_re[target] = data_re[position];
-	data_im[target] = data_im[position];
-	data_re[position] = temp_re;
-	data_im[position] = temp_im;
+        const float temp_re = data_re[target];
+        const float temp_im = data_im[target];
+        data_re[target] = data_re[position];
+        data_im[target] = data_im[position];
+        data_re[position] = temp_re;
+        data_im[position] = temp_im;
       }
       unsigned int mask = N;
       while(target & (mask >>=1))
-	target &= ~mask;
-      target |= mask;
+	      target &= ~mask;
+        target |= mask;
     }
 }
 
 void compute(float data_re[], float data_im[], const unsigned int N)
 {
-  const float pi = -3.14159265358979323846;
-  
-  for(unsigned int step=1; step<N; step <<=1) {
-    const unsigned int jump = step << 1;
-    const float step_d = (float) step;
-    float twiddle_re = 1.0;
-    float twiddle_im = 0.0;
-    for(unsigned int group=0; group<step; group++)
-    {
-		for(unsigned int pair=group; pair<N; pair+=jump)
-		{
-			const unsigned int match = pair + step;
-			const float product_re = twiddle_re*data_re[match]-twiddle_im*data_im[match];
-			const float product_im = twiddle_im*data_re[match]+twiddle_re*data_im[match];
-			data_re[match] = data_re[pair]-product_re;
-			data_im[match] = data_im[pair]-product_im;
-			data_re[pair] += product_re;
-			data_im[pair] += product_im;
-		}
-	
-	// we need the factors below for the next iteration
-	// if we don't iterate then don't compute
-	if(group+1 == step)
-	  {
-	    continue;
-	  }
-
-	float angle = pi*((float) group+1)/step_d;
-	twiddle_re = cos(angle);
-	twiddle_im = sin(angle);
-      }
-  }
+    const float pi = -3.14159265358979323846;
+    for(unsigned int step=1; step<N; step <<=1) {
+        const unsigned int jump = step << 1;
+        const float step_d = (float) step;
+        float twiddle_re = 1.0;
+        float twiddle_im = 0.0;
+        for(unsigned int group=0; group<step; group++){
+            for(unsigned int pair=group; pair<N; pair+=jump){
+                  const unsigned int match = pair + step;
+                  const float product_re = twiddle_re*data_re[match]-twiddle_im*data_im[match];
+                  const float product_im = twiddle_im*data_re[match]+twiddle_re*data_im[match];
+                  data_re[match] = data_re[pair]-product_re;
+                  data_im[match] = data_im[pair]-product_im;
+                  data_re[pair] += product_re;
+                  data_im[pair] += product_im;
+            }
+            // we need the factors below for the next iteration
+            // if we don't iterate then don't compute
+            if(group+1 == step)
+                continue;
+            
+            float angle = pi*((float) group+1)/step_d;
+            twiddle_re = cos(angle);
+            twiddle_im = sin(angle);
+          }
+    }
 }
 
 ///////
@@ -96,6 +90,9 @@ void print_complex_data(float data_re[], float data_im[], int len);
 // We will run 4 test cases to ensure our FFT data is correct
 int main(int argc,  char **argv)
 {
+  clock_t start,  stop;
+  double elapsed_time;
+
   cl_int err;
   const char *input0_file = argv[1], *input1_file = argv[2];
   const char *output0_file = argv[3], *output1_file = argv[4];
@@ -135,8 +132,12 @@ int main(int argc,  char **argv)
   // Test Case 1
   output0 = input0;
   output1 = input1;
-  fft(output0.data, output1.data, N); //fft(data1_re, data1_im, 8);
-  
+  printf("loaded Input files...done\n");
+  start = clock();//~
+  fft(output0.data, output1.data, N);
+  stop = clock();//~
+  elapsed_time = ((double) (stop - start)) / CLOCKS_PER_SEC;
+ 
   if (DEBUG){
     printf("---Frequency Domain:\n");
     print_complex_data(input0.data, input1.data, N); //print_complex_data(data1_re, data1_im, N);
@@ -148,6 +149,8 @@ int main(int argc,  char **argv)
   // Check the result of the matrix multiply
   printf("CheckMatrix      (Real): \t");CheckMatrix(&output0, &expected0);
   printf("CheckMatrix (Imaginary): \t");CheckMatrix(&output1, &expected1);
+
+  printf("Computational-time, FFT algorithm (N= %d) = %.6f Seconds\n", N, elapsed_time);
 }
 
 void print_complex_data(float data_re[], float data_im[], int len)
